@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="UTF-8">
+<head>
+	<style>
+		pre {
+			line-height: 1.2em;
+		}
+	</style>
+	<script>
+		function fetchData() {
+			const params = new URLSearchParams(window.location.search);
+			fetch('readData.php?' + params.toString())
+				.then(response => response.text())
+				.then(data => {
+					const jsonData = JSON.parse(data);
+					const prettyData = JSON.stringify(jsonData, null, 2);
+					document.getElementById('response').innerHTML = `<pre>${prettyData}</pre>`;
+				})
+				.catch(error => document.getElementById('response').innerHTML = `<pre>${error}</pre>`);
+		}
+
+		function main()
+		{
+			{
+				history.pushState(null, null, location.href);
+				window.addEventListener('popstate', event=>{
+					history.go(1);
+				});
+			}
+
+			
+			fetchData();
+
+			const params = new URLSearchParams(document.location.search);
+			const internalStr=params.get("internal");
+			if(internalStr=="true") {
+				document.getElementById('backToTop').innerHTML = '<a href="internal.html">最初に戻る。</a>';
+			}
+		}
+		window.onload = main;
+	</script>
+</head>
+<body>
+	<h1>内部向け完了ページ</h1>
+	<p>ご協力ありがとうございました。</p>
+	<div id="backToTop"></div>
+	<hr>
+	<p>以下、結果。</p>
+	<div id="response">Loading...</div>
+</body>
+</html>
